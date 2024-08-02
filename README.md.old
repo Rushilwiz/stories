@@ -1,6 +1,6 @@
 # Swayambhu Stories
 
-Digital archives for the Swayambhu Stories project.
+Digital archive for the Swayambhu Stories project.
 
 [![Built with Cookiecutter Django](https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg?logo=cookiecutter)](https://github.com/cookiecutter/cookiecutter-django/)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
@@ -48,6 +48,10 @@ Moved to [Live reloading and SASS compilation](https://cookiecutter-django.readt
 ## Deployment
 
 The following details how to deploy this application.
+
+### Docker
+
+See detailed [cookiecutter-django Docker documentation](http://cookiecutter-django.readthedocs.io/en/latest/deployment-with-docker.html).
 
 ### Custom Bootstrap Compilation
 
