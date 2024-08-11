@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+
+{% block main %}
+  <a href="{% url 'users:detail' request.user.username %}" class="btn btn-sm btn-outline-secondary mb-sm-2 "><i class="bi bi-arrow-left"></i><span> Back</span></a>
+  {% block content %}
+  {% endblock content %}
+{% endblock main %}

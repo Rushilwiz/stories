@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% load static %}
+{% block body %}
+<div class="d-flex flex-column align-items-center justify-content-center min-vh-100">
+    <img src="{% static 'img/eyes.svg' %}" class="w-25" alt="Image of the eyes on the Swayambhunath temple">
+    <a href="{% url "account_login" %}"><button class="btn btn-sm-lg btn-outline-primary" type="button">sign in to the archive</button></a>
+    <p class="text-center mt-3">or <a href="{% url 'home' %}">request access</a>.</p>
+</div>
+{% endblock body %}

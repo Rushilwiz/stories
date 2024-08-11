@@ -1,0 +1,83 @@
+@import "custom_bootstrap_vars";
+@import "~bootstrap/scss/bootstrap";
+
+$bootstrap-icons-font-dir: "~bootstrap-icons/font/fonts";
+@import "~bootstrap-icons/font/bootstrap-icons.scss";
+
+// project specific CSS goes here
+
+///////////////
+// Variables //
+///////////////
+
+// Alert colors
+
+$background: #d0b497;
+$accent1: #631812;
+$accent2: #cb8e3f;
+
+$white: #fff;
+$mint-green: #d6e9c6;
+$black: #000;
+$pink: #f2dede;
+$dark-pink: #eed3d7;
+$red: #b94a48;
+
+////////////
+// Alerts //
+////////////
+
+// bootstrap alert CSS, translated to the django-standard levels of
+// debug, info, success, warning, error
+
+.alert-debug {
+  background-color: $white;
+  border-color: $mint-green;
+  color: $black;
+}
+
+.alert-error {
+  background-color: $pink;
+  border-color: $dark-pink;
+  color: $red;
+}
+
+.circle {
+  border-radius: 50%;
+}
+
+.serif {
+  font-family: $font-family-serif;
+}
+
+.accent1 {
+  color: $accent1;
+}
+
+.accent2 {
+  color: $accent2;
+}
+
+.sidebar {
+  li {
+    a {
+      margin: 0 5px;
+    }
+
+    .selected {
+      border-left: 5px solid $accent2;
+      margin-left: 0px;
+
+      i {
+        color: $accent2 !important;
+      }
+    }
+
+    &:hover {
+      background-color: $background;
+      a i {
+        color: $black !important;
+      }
+    }
+  }
+}

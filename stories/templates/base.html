@@ -1,0 +1,131 @@
+{% load static i18n %} {% load render_bundle from webpack_loader %}
+
+<!DOCTYPE html>
+{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE }}">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>{% block title %} Swayambhu Stories {% endblock title %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Digital archives for the Swayambhu Stories project."
+    />
+    <meta name="author" content="Rushil Umaretiya" />
+    <link rel="icon" href="{% static 'images/favicons/favicon.ico' %}" />
+    {% block css %}
+    <!-- Your stuff: Third-party CSS libraries go here -->
+    <!-- This file stores project-specific CSS -->
+
+      {% render_bundle 'project' 'css' %} {% endblock css %}
+    <!-- Le javascript -->
+
+    {# Placed at the top of the document so pages load faster with defer #}
+    {% block javascript %}
+
+    <!-- Vendor dependencies bundled as one file -->
+      {% render_bundle 'vendors' 'js' attrs='defer' %}
+
+    <!-- place project specific Javascript in this file -->
+
+      {% render_bundle 'project' 'js' attrs='defer' %} {% endblock javascript %}
+  </head>
+  <body>
+    {% block body %}
+    <div class="min-vh-100 d-flex flex-column">
+      <nav class="navbar navbar-expand-md navbar-light bg-light">
+        <div class="container-fluid">
+          <button
+            class="navbar-toggler navbar-toggler-right"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <a class="navbar-brand serif accent1" href="{% url 'home' %}">
+            Swayambhu Stories
+          </a>
+          <div class="collapse justify-content-end navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'home' %}"
+                >Explore the archive</a
+                  >
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'home' %}">About</a>
+                </li>
+                {% if request.user.is_authenticated %}
+                  <li class="nav-item">
+                    <a
+                      class="nav-link"
+                      href="{% url 'users:detail' request.user.username %}"
+                    >{% translate "My Profile" %}</a
+                      >
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="{% url 'account_logout' %}"
+                      >{% translate "Sign Out" %}</a
+                        >
+                      </li>
+                {% else %}
+                  <li class="nav-item">
+                    <a
+                      id="log-in-link"
+                      class="nav-link"
+                      href="{% url 'account_login' %}"
+                    >{% translate "Sign In" %}</a
+                      >
+                    </li>
+                {% endif %}
+              </ul>
+            </div>
+          </div>
+        </nav>
+        <div class="d-flex flex-column flex-sm-row flex-grow-1">
+            <div class="col-sm-auto bg-dark sticky-top p-0">
+              <div class="d-flex flex-sm-column flex-row flex-nowrap bg-dark align-items-center sticky-top">
+                <ul class="nav sidebar flex-sm-column flex-row">
+                  <li class="nav-item">
+                    <a href="#" class="nav-link py-3 px-4 {% if request.resolver_match.url_name == 'home' %}selected{% endif %}" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Home">
+                      <i class="bi-house-door fs-4 text-light"></i>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="#" class="nav-link py-3 px-4" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Dashboard">
+                      <i class="bi-search fs-4 text-light"></i>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="#" class="nav-link py-3 px-4" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Orders">
+                      <i class="bi-kanban fs-4 text-light"></i>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="#" class="nav-link py-3 px-4" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Products">
+                      <i class="bi-people fs-4 text-light"></i>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="#" class="nav-link py-3 px-4" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Customers">
+                      <i class="bi-patch-question fs-4 text-light"></i>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="col p-3">
+              {% block main %} {% block content %} {% endblock content %} {% endblock main %}
+            </div>
+        </div>
+        </div>
+    {% endblock body %}
+    <!-- /container -->
+    {% block modal %} {% endblock modal %} {% block inline_javascript %}{% endblock inline_javascript %}
+  </body>
+</html>
