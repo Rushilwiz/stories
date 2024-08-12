@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import QuerySet
 from django.urls import reverse
@@ -6,9 +7,11 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import DetailView
 from django.views.generic import RedirectView
 from django.views.generic import UpdateView
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
 
-from stories.apps.users.models import User
-
+from .models import User
+from .forms import UserUpdateForm
 
 class UserDetailView(LoginRequiredMixin, DetailView):
     model = User
@@ -21,12 +24,13 @@ user_detail_view = UserDetailView.as_view()
 
 class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = User
-    fields = ["full_name"]
+    fields = ["image", "cropping", "full_name"]
     success_message = _("Information successfully updated")
+    success_url = "users:update"
 
     def get_success_url(self) -> str:
         assert self.request.user.is_authenticated  # type guard
-        return self.request.user.get_absolute_url()
+        return reverse("users:update")
 
     def get_object(self, queryset: QuerySet | None=None) -> User:
         assert self.request.user.is_authenticated  # type guard

@@ -6,7 +6,6 @@ from django import forms
 
 from .models import User
 
-
 class UserAdminChangeForm(admin_forms.UserChangeForm):
     class Meta(admin_forms.UserChangeForm.Meta):  # type: ignore[name-defined]
         model = User
@@ -38,3 +37,8 @@ class UserSignupForm(SignupForm):
         user.full_name = self.cleaned_data['full_name']
         user.save()
         return user
+
+class UserUpdateForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['image', 'cropping', 'full_name']

@@ -1,4 +1,4 @@
-{% load static i18n %} {% load render_bundle from webpack_loader %}
+{% load static i18n cropping %} {% load render_bundle from webpack_loader %}
 
 <!DOCTYPE html>
 {% get_current_language as LANGUAGE_CODE %}
@@ -15,21 +15,15 @@
     <meta name="author" content="Rushil Umaretiya" />
     <link rel="icon" href="{% static 'images/favicons/favicon.ico' %}" />
     {% block css %}
-    <!-- Your stuff: Third-party CSS libraries go here -->
-    <!-- This file stores project-specific CSS -->
+      {% render_bundle 'project' 'css' %}
+    {% endblock css %}
 
-      {% render_bundle 'project' 'css' %} {% endblock css %}
-    <!-- Le javascript -->
-
-    {# Placed at the top of the document so pages load faster with defer #}
     {% block javascript %}
-
-    <!-- Vendor dependencies bundled as one file -->
       {% render_bundle 'vendors' 'js' attrs='defer' %}
+      {% render_bundle 'project' 'js' attrs='defer' %}
+    {% endblock javascript %}
 
-    <!-- place project specific Javascript in this file -->
-
-      {% render_bundle 'project' 'js' attrs='defer' %} {% endblock javascript %}
+    {% block head_extra %}{% endblock head_extra %}
   </head>
   <body>
     {% block body %}
@@ -51,7 +45,7 @@
             Swayambhu Stories
           </a>
           <div class="collapse justify-content-end navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
+            <ul class="navbar-nav main-nav mr-auto">
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'home' %}"
                 >Explore the archive</a
@@ -61,18 +55,17 @@
                   <a class="nav-link" href="{% url 'home' %}">About</a>
                 </li>
                 {% if request.user.is_authenticated %}
-                  <li class="nav-item">
-                    <a
-                      class="nav-link"
-                      href="{% url 'users:detail' request.user.username %}"
-                    >{% translate "My Profile" %}</a
-                      >
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="{% url 'account_logout' %}"
-                      >{% translate "Sign Out" %}</a
-                        >
-                      </li>
+                <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="{% url 'users:detail' request.user.username %}" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="{% cropped_thumbnail request.user "cropping" %}" class="rounded-circle" width="30" height="30" alt="">
+
+                {% if request.user.full_name %}{{request.user.full_name}}{% else %}{{request.user.email}}{% endif %}              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                  <li><span class="dropdown-item-text text-secondary border-bottom pb-sm-2">Hi, {{ request.user.username }}.</span></li>
+                <li><a href="{% url 'users:detail' request.user.username %}" class="dropdown-item">Profile</a></li>
+                <li><a class="dropdown-item" href="{% url 'account_logout' %}">{% translate "Sign Out" %}</a></li>
+              </ul>
+            </li>
                 {% else %}
                   <li class="nav-item">
                     <a
@@ -92,34 +85,50 @@
               <div class="d-flex flex-sm-column flex-row flex-nowrap bg-dark align-items-center sticky-top">
                 <ul class="nav sidebar flex-sm-column flex-row">
                   <li class="nav-item">
-                    <a href="#" class="nav-link py-3 px-4 {% if request.resolver_match.url_name == 'home' %}selected{% endif %}" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Home">
+                    <a href="{% url 'home' %}" class="nav-link py-3 px-4 {% if request.resolver_match.url_name == 'home' %}selected{% endif %}" title="Home" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Home">
                       <i class="bi-house-door fs-4 text-light"></i>
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a href="#" class="nav-link py-3 px-4" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Dashboard">
+                    <a href="" class="nav-link py-3 px-4" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Search the archive">
                       <i class="bi-search fs-4 text-light"></i>
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a href="#" class="nav-link py-3 px-4" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Orders">
+                    <a href="#" class="nav-link py-3 px-4" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Projects & Playlists">
                       <i class="bi-kanban fs-4 text-light"></i>
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a href="#" class="nav-link py-3 px-4" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Products">
+                    <a href="#" class="nav-link py-3 px-4" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Teams">
                       <i class="bi-people fs-4 text-light"></i>
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a href="#" class="nav-link py-3 px-4" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Customers">
+                    <a href="#" class="nav-link py-3 px-4" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Guides & Tips">
                       <i class="bi-patch-question fs-4 text-light"></i>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="#" class="nav-link py-3 px-4" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="">
+                      <i class="bi-plus-circle fs-4 text-danger"></i>
                     </a>
                   </li>
                 </ul>
               </div>
             </div>
             <div class="col p-3">
+                    {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-dismissible {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                {{ message }}
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"
+                        aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          {% endif %}
               {% block main %} {% block content %} {% endblock content %} {% endblock main %}
             </div>
         </div>

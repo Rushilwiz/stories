@@ -1,22 +1,46 @@
 {% extends "base.html" %}
 
-{% load crispy_forms_tags %}
+{% load crispy_forms_tags cropping %}
 
 {% block title %}
   {{ user.username }}
 {% endblock title %}
+
+
+{% block head_extra %}
+    {{ form.media }}
+{% endblock head_extra %}
+
+
 {% block content %}
 <a href="{% url 'users:detail' request.user.username %}" class="btn btn-sm btn-outline-secondary mb-sm-2 "><i class="bi bi-arrow-left"></i><span> Back</span></a>
 
-  <h1>
-    {{ user.username }}
-</h1>
-<h3>{{ user.full_name }}</h3>
-<form class="form-horizontal"
+<h2>
+{{ user.full_name }}
+</h2>
+<h6>Username: {{ user.username }}</h3>
+<h6>Email: {{ user.email }}</h3>
+<form class="form-horizontal user-update-form w-25"
       method="post"
-      action="{% url 'users:update' %}">
+      action="{% url 'users:update' %}"
+      enctype="multipart/form-data">
   {% csrf_token %}
-  {{ form|crispy }}
+
+  <hr>
+  <p>Profile Picture</p>
+  <img src="{% cropped_thumbnail request.user "cropping" %}" class="m-2 rounded-circle" width="100px" >
+  
+  {% for field in form %}
+      {% if field.name != "image" and field.name != "cropping" %}
+          {{ field|as_crispy_field }}
+      {% elif field.name == "cropping" %}
+        <i>Note: First, upload your image and hit update, then you can change the cropping.</i>
+        {{ field }}
+      {% else %}
+        {{ field }}
+      {% endif %}
+      <hr>
+  {% endfor %}
   <div class="control-group">
     <div class="controls">
       <button type="submit" class="btn btn-primary">Update</button>
@@ -24,3 +48,30 @@
   </div>
 </form>
 {% endblock content %}
+
+{% block inline_javascript %}
+
+<script>
+    // Hide the "Currently:" text
+    const fileUploadParagraph = document.querySelector('.file-upload');
+    if (fileUploadParagraph) {
+        const textNodes = Array.from(fileUploadParagraph.childNodes).filter(node => node.nodeType === Node.TEXT_NODE);
+        textNodes.forEach(textNode => {
+            if (textNode.nodeValue.trim().startsWith('Currently:')) {
+                textNode.nodeValue = '';
+            }
+        });
+
+        // Hide the <a> tag
+        const anchorTag = fileUploadParagraph.querySelector('a');
+        if (anchorTag) {
+            anchorTag.style.display = 'none';
+        }
+    }
+
+    const fileInput = document.querySelector('input[type="file"]');
+    fileInput.classList.add('form-control');
+    fileInput.classList.add('mt-2');
+</script>
+
+{% endblock inline_javascript %}

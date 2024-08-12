@@ -1,7 +1,10 @@
 import environ
 import os
 
+from django.contrib import messages
+
 from pathlib import Path
+from easy_thumbnails.conf import Settings as thumbnail_settings
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 APP_DIR = BASE_DIR / "stories"
@@ -62,6 +65,8 @@ THIRD_PARTY_APPS = [
     "corsheaders",
     "drf_spectacular",
     "webpack_loader",
+    'easy_thumbnails',
+    'image_cropping',
 ]
 
 LOCAL_APPS = [
@@ -69,6 +74,11 @@ LOCAL_APPS = [
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
+
+# THUMBNAILS
+THUMBNAIL_PROCESSORS = (
+    'image_cropping.thumbnail_processors.crop_corners',
+) + thumbnail_settings.THUMBNAIL_PROCESSORS
 
 # AUTHENTICATION
 AUTHENTICATION_BACKENDS = [
@@ -181,6 +191,7 @@ FORM_RENDERER = "django.forms.renderers.TemplatesSetting"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
+
 # EMAIL
 
 EMAIL_BACKEND = env(
@@ -189,6 +200,7 @@ EMAIL_BACKEND = env(
 )
 
 EMAIL_TIMEOUT = 5
+ACCOUNT_EMAIL_VERIFICATION = "none"
 
 # ADMIN
 
@@ -220,7 +232,8 @@ LOGGING = {
 ACCOUNT_ALLOW_REGISTRATION = env.bool("ACCOUNT_ALLOW_REGISTRATION", True)
 ACCOUNT_AUTHENTICATION_METHOD = "username"
 ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = "optional"
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_EMAIL_VERIFICATION = "none"
 ACCOUNT_ADAPTER = "stories.apps.users.adapters.AccountAdapter"
 ACCOUNT_FORMS = {"signup": "stories.apps.users.forms.UserSignupForm"}
 SOCIALACCOUNT_ADAPTER = "stories.apps.users.adapters.SocialAccountAdapter"

@@ -4,7 +4,13 @@
 $bootstrap-icons-font-dir: "~bootstrap-icons/font/fonts";
 @import "~bootstrap-icons/font/bootstrap-icons.scss";
 
-// project specific CSS goes here
+$mobile-width: 576px;
+
+@mixin mobile {
+  @media (max-width: $mobile-width) {
+    @content;
+  }
+}
 
 ///////////////
 // Variables //
@@ -42,8 +48,39 @@ $red: #b94a48;
   color: $red;
 }
 
-.circle {
-  border-radius: 50%;
+.user-update-form {
+  .file-upload {
+    * {
+      display: none;
+    }
+
+    input {
+      display: block;
+    }
+  }
+}
+
+.main-nav {
+  .nav-item {
+    border-right: 2px solid transparent;
+
+    border-image: linear-gradient(
+      rgba(0, 0, 0, 0) 20%,
+      #ccc 20%,
+      #ccc 75%,
+
+      rgba(0, 0, 0, 0) 75%
+    );
+    border-image-slice: 1;
+
+    @include mobile {
+      border: none;
+    }
+  }
+
+  .nav-item.dropdown {
+    border-right: none;
+  }
 }
 
 .serif {
